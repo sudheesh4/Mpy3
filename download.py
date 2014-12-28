@@ -124,8 +124,6 @@ def downsome(uri):
     d.savefile()
     print("Time Taken-",str(endtime-starttime))
     return '400'
-
-
     
-        
+#downsome('http://v4.mywappy.com/Singletrack/128/Turn%20Down%20For%20What%20-%20Manj%20Musik%20Ft%20Lil%20John%20(DjPunjab.Com).mp3')        
     

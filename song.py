@@ -50,16 +50,6 @@ class song:
     def savetofile(self):
         txt=" "
         self.links=filtermp3(self.links)
-##        lf=open('link.txt','wb')
-##        for link in self.links:
-##            try:
-##                lf.write(link)
-##                lf.write('\n')
-##            except:
-##                continue
-##        lf.close()
-
-        #open('search.html','wb').write(self.html)
 
         
     def givelink(self):
@@ -106,10 +96,7 @@ def startm():
     get_fckh=threading.Thread(target=getfckh)
     get_fckh.start()
     name=input("Enter name of song  ")
-    artist=input("Enter Name of Artist  ")
     name=name.replace(" ","-")
-    artist=artist.replace(" ","-")
-    name=name+"-"+artist
     get_fckh.join()
     s=song(name)
     s.savetofile()
@@ -122,6 +109,9 @@ def startm():
     print("Trying First link! ")    
     for i in range(0,len(link)):
         uri=link[0]
+        
+        uri=uri.replace(" ","%20")#as all space are replaced by %20 while requesting!no whitepace!
+        
         j=downsome(uri)
         if j=='404':
             print("Link "+str(i+1)+" Failed! Trying Next")
