@@ -1,4 +1,4 @@
-import song
+import skull
 
-song.startm()
+skull.startskull()
 input()
