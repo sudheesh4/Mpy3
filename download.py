@@ -32,8 +32,9 @@ class downloadfile:
             return
         print("Connected")
 
-    def namesize(self):
-        self.filename=input("Save as ? \n")
+    def namesize(self,tempn):
+       # self.filename=input("Save as ? \n")
+        self.filename=tempn
         try:
             self.size=int(self.url.getheader('Content-Length',None))
         except:
@@ -93,7 +94,7 @@ class downloadfile:
     def schnk(self):
         return self.chunk
         
-def downsome(uri):
+def downsome(uri,tempna):
     temp=threading.Thread(target=reqfunc,args=(uri,"random"))
     temp.start()
     code='404'
@@ -103,7 +104,7 @@ def downsome(uri):
         print("Try again later!:/")
         return code
     
-    d.namesize()
+    d.namesize(tempna)
     if d.er():
         print("Try again later!:/")
         return code

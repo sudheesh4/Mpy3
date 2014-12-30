@@ -58,28 +58,28 @@ def getfckh():
     tod=str(datetime.date.today())+'\n'
     
     global fckh
-    try:
-        f=open('link.txt','r')
-        for templ in f:
-            break
-        las=templ
-
-        f.close()
-        
-    except:
-        las=''
-    if las==tod:
-
-        fk=open('link.txt','r')
-        for l in fk:
-            t=l
-
-        fckh=t
-
-        fk.close()
-        
-
-        return
+##    try:
+##        f=open('link.txt','r')
+##        for templ in f:
+##            break
+##        las=templ
+##
+##        f.close()
+##        
+##    except:
+##        las=''
+##    if las==tod:
+##
+##        fk=open('link.txt','r')
+##        for l in fk:
+##            t=l
+##
+##        fckh=t
+##
+##        fk.close()
+##        
+##
+##        return
     htm=urllib.request.urlopen('http://mp3skull.com/').read()
     s=BeautifulSoup(htm)
     
@@ -97,6 +97,7 @@ def startm():
     get_fckh.start()
     name=input("Enter name of song  ")
     name=name.replace(" ","-")
+
     get_fckh.join()
     s=song(name)
     s.savetofile()
@@ -106,13 +107,14 @@ def startm():
     if len(link)==0:
         print("No such song found on site! :/")
         exit()
+    tempfn=input('Save as?\n')
     print("Trying First link! ")    
     for i in range(0,len(link)):
         uri=link[0]
         
         uri=uri.replace(" ","%20")#as all space are replaced by %20 while requesting!no whitepace!
         
-        j=downsome(uri)
+        j=downsome(uri,tempfn)
         if j=='404':
             print("Link "+str(i+1)+" Failed! Trying Next")
             continue
