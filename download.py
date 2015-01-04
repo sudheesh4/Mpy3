@@ -84,7 +84,7 @@ class downloadfile:
             k=i*self.chunk
             if k in self.parts:
                 ch=self.parts[i*self.chunk]
-                self.parts[0]=self.parts[0]+ch
+                self.parts[0]=self.parts[0]+self.parts[i*self.chunk]
                 i=i+1
             else:
                 break

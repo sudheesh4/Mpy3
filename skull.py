@@ -32,4 +32,4 @@ def startskull():
          
     
 
-startskull()
+#startskull()

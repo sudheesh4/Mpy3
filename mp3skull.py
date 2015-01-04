@@ -53,8 +53,6 @@ class song_mp3skull:
         self.links=filtermp3(self.links)
         for link in self.soup.find_all('b'):
             link=str(link)
-            link.replace("<b>"," ")
-            link.replace("</b>"," ")
             link=link[3:len(link)-4]
             if link[len(link)-3:] == "mp3":
                 link=str(i)+"->"+link

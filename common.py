@@ -32,14 +32,16 @@ def manual_down(tempfn,url_names,link):
 
             exit()
         choice=int(choice)
-        print("Trying To download Link ",choice,"->",url_names[choice-1])
+        print("Trying To download Link ->",url_names[choice-1])
         uri=link[choice-1]
         uri=uri.replace(" ","%20")
         j=downsome(uri,tempfn)
         if j=="404":
             print("Link ",choice , " could not be downladed! Try some other link")
+            printnames(url_names)
+            choice=input("\n Which one to try next ?  ")
             continue
         print("Downloaded!")
 
-        printnames(url_names)
-        choice=input("\n Which one to try next ?  ")
+        
+        choice="exit"
