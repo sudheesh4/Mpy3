@@ -1,18 +1,30 @@
 from mp3skull import *
 from common import *
+from mssgboxes import *
+from tkinter import *
+root=Tk()
+root.withdraw()
 def startskull():
     fckh=""
     url_names=[]
     link=[]
     get_fckh=threading.Thread(target=getfckh)
     get_fckh.start()
-    name=input("Enter name of song  ")
+    temp=[]
+    d=SOMEMSG(root,"Enter name of song",temp)
+    root.wait_window(d.top)
+    name=temp[0]
+    temp=[]
     name=name.replace(" ","-")
-    tempfn=input('Save as?\n')
+    d=SOMEMSG(root,"Save as ?",temp)
+    root.wait_window(d.top)
+    tempfn=temp[0]
+
+##    tempfn=input('Save as?\n')
     try:
         fileop=open(tempfn,'w')
     except:
-        print("INVALID FILE NAME ! Giving Name default.mp3")
+        ms=MSSG(root,"INVALID FILE NAME ! Giving Name default.mp3")
         tempfn="default.mp3"
     finally:
         fileop.close()
@@ -23,7 +35,8 @@ def startskull():
     url_names=s.givenames()
     
     if len(link)==0:
-        print("No such song found on site! :/")
+        ms=MSSG(root,"No such song found on site! :/")
+       # print("No such song found on site! :/")
         exit()
 
    # auto_down(tempfn,url_names,link)   
