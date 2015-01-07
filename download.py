@@ -1,3 +1,9 @@
+import socket
+import socks
+
+socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
+socket.socket = socks.socksocket
+
 import urllib.request
 import sys
 import os
