@@ -1,6 +1,7 @@
 from download3 import *
 from tkinter import *
 from mssgboxes import *
+import threading
 root=Tk()
 root.title('links')
 root.withdraw()
@@ -18,7 +19,8 @@ def peer(event,name,tempfn):
     root.wait_window(d.top)
     tempfn=te[0]
     name=name.replace(" ","%20")
-    interact(name,tempfn)
+    t=threading.Thread(target=interact,args=(name,tempfn))
+    t.start()
     
     
     
