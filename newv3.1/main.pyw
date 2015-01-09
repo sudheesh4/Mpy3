@@ -1,4 +1,7 @@
-import skull
+##import skull
+##skull.startskull()
+import emp3main
 
-skull.startskull()
+emp3main.startemp3()
+
 input()
