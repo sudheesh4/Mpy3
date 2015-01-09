@@ -63,6 +63,8 @@ class song_emp3:
 ##        index=0
 ##        for link in self.soup.find_all('div'):
 ##            txt=link.get('class')
+##            print(link)
+##            input()
 ##            if txt=='song_size':
 ##                link=str(link)
 ##                link=link.replace('<div class="song_size">',' ')
