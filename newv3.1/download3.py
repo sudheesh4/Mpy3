@@ -13,8 +13,9 @@ from tkinter import *
 import tkinter.ttk as ttk
 re=None
 newsize=0
-notr=7
+notr=6
 pauseint=0
+complete=False
 pauseflag=False
 def compl():
     k=0
@@ -49,19 +50,20 @@ def guiclt(goturi,gotname):
             if pauseint==0:
                 pauseflag=True
                 pauseint=1
-                pause['text']='Play'
+                pause['text']='Resume'
                 time.sleep(0.5)
             else:
                 pauseflag=False
                 pause['text']='Pause'
                 pauseint=0
-                time.sleep(0.5)
+                time.sleep(0.9)
         pause.bind('<Button-1>',pauseplay)
+
         pause.pack()
         def printgui(text,k):
             text=text
             k['text']=text
-            print(text)
+            #print(text)
         def reqfunc(a,b):
             global re
             re=urllib.request.Request(a)
@@ -147,7 +149,8 @@ def guiclt(goturi,gotname):
                     self.error=True
                     return
                 global newsize
-                newchunk=int(self.chunk/3)
+                newchunk=8192
+                #newchunk=self.chunk/4
                 printgui("Reading",lab)
                 tempfl=1
                 while True:
@@ -194,14 +197,20 @@ def guiclt(goturi,gotname):
                 printgui('size- '+str(os.path.getsize(self.filename)),lab)
             def schnk(self):
                 return self.chunk
-                
+        def songplay(tempna):
+            if complete:
+                os.system(tempna)
+            
         def downsome(uri,tempna):
               
             temp=threading.Thread(target=reqfunc,args=(uri,"random"))
             temp.start()
             code='404'
+            play=Button(root,text="Play Song",command=lambda:songplay(tempna))
+            play.pack()            
             d=downloadfile(uri)
             threads=[]
+
             if d.er():
                 printgui("Try again later!:/",lab)
                 return code
@@ -228,10 +237,13 @@ def guiclt(goturi,gotname):
                 return code
             d.savefile()
             time.sleep(2)
+            global complete
+            complete=True
             printgui("Time Taken-"+str(endtime-starttime),per)
             time.sleep(2)
-            root.destroy()
-            return '400'
+            
+            #root.destroy()
+           # return '400'
         stop_threads = False
         t=threading.Thread(target=downsome,args=(goturi,gotname)  )
         t.start()
