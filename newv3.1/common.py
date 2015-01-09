@@ -18,6 +18,7 @@ def peer(event,name,tempfn):
     d=SOMEMSG(root,"Save as?",te)
     root.wait_window(d.top)
     tempfn=te[0]
+    tempfn=tempfn+".mp3"
     name=name.replace(" ","%20")
     t=threading.Thread(target=interact,args=(name,tempfn))
     t.start()
@@ -56,6 +57,17 @@ def peer2(tempfn,url_names,link):
         l.pack()
         l=Label(to, text=url_names[7], fg="Blue", cursor="hand2")
         l.bind("<Button-1>",lambda event: peer(event,link[7],tempfn))
+        l=Label(to, text=url_names[8], fg="Blue", cursor="hand2")
+        l.bind("<Button-1>",lambda event: peer(event,link[8],tempfn))
+        l.pack()
+        l=Label(to, text=url_names[9], fg="Blue", cursor="hand2")
+        l.bind("<Button-1>",lambda event: peer(event,link[9],tempfn))
+        l.pack()
+        l=Label(to, text=url_names[10], fg="Blue", cursor="hand2")
+        l.bind("<Button-1>",lambda event: peer(event,link[10],tempfn))
+        l.pack()
+        l=Label(to, text=url_names[11], fg="Blue", cursor="hand2")
+        l.bind("<Button-1>",lambda event: peer(event,link[11],tempfn))
     except:
         pass
 
