@@ -1,4 +1,3 @@
 Mpy3
 ==========
-
-A script to download song from mp3skull.com
+Search any song and download from any link!(supports emp3world.com  and mp3skull.com)
