@@ -1,4 +1,9 @@
 import datetime
+import socket
+import socks
+
+socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
+socket.socket = socks.socksocket
 import urllib.request
 import os
 import sys
@@ -24,6 +29,7 @@ class song_emp3:
         self.urlnames=[]
         #print(self.url)
         self.get_links()
+        self.error=False
 
     def get_html(self):
         i=0
@@ -38,8 +44,9 @@ class song_emp3:
                 continue
             break
         if i==maxi:
+            self.error=True
             print("Not able to connect!Try Again later:/")
-            exit()
+            
         print('connected!')
             
         self.html=uri.read()
@@ -73,11 +80,6 @@ class song_emp3:
 ##                print(self.urlnames[index])
 ##                index=index+1
                 
-
-
-
-    def savetofile(self):
-        txt=" "       
     def givelinks(self):
         return self.links
     def givenames(self):
