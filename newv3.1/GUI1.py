@@ -8,9 +8,12 @@ import sys
 import os
 import time
 import threading
+dictlabel={}
+root = Tk()
 
 def update(name,label,dobj):
-    global log
+    global log,dictlabel
+    
     while True:
         status,per=dobj.getstatus()
         size=dobj.getsize()
@@ -20,14 +23,27 @@ def update(name,label,dobj):
         else:
             size=str(size)+" Kb"
         label['text']=name+"-"+size+"-"+status+"-"+str(per)+"%"
+        root.update()
+       # dictlabel[label]=name+"-"+size+"-"+status+"-"+str(per)+"%"
+
 
 def peer(event,name):
     os.system(name)
+    
+def update2():
+    global dictlabel
+    while True:
+        try:
+            for l,txt in dictlabel.items():
+                l['text']=txt
+        except:
+            continue
 
 def handlelink(label,uri,name):
     uri=uri.replace(' ','%20')
     print(uri)
     d=downloadfile(uri)
+   
     st=threading.Thread(target=update,args=(name,label,d))
     st.start()
     thread=[]
@@ -96,29 +112,36 @@ class GUI(ttk.Frame):
         obtn = ttk.Button(self, text="OK",command=self.startit)
         obtn.grid(row=5, column=3)
         self.parent.bind('<Return>',self.peertostart)
+
+            
         
     def peertostart(self,event):
         self.startit()
     def startit(self):
-         self.parent.withdraw()
-         try:
-             s=song_emp3(self.entry.get())
-         except:
-            return
-         if not s.error:
-             self.links=s.givelinks()
-             self.urlnames=s.givenames()
-             downuri,downame=self.getdownlink()
-             l=Label(self.area,text=downame+"-Connecting")
-             l.config(bg='white')  
-             t=threading.Thread(target=handlelink,args=(l,downuri,downame))
-             self.songthreads.append(t)
-             t.start()
+        # self.parent.withdraw()
+        def startpeer(self):
+             global dictlabel
+             try:
+                 s=song_emp3(self.entry.get())
+             except:
+                return
+             if not s.error:
+                 self.links=s.givelinks()
+                 self.urlnames=s.givenames()
+                 downuri,downame=self.getdownlink()
+                 l=Label(self.area,text=downame+"-Connecting")
+                 l.config(bg='white')  
+                 t=threading.Thread(target=handlelink,args=(l,downuri,downame))
+                 dictlabel[l]=downame
+                 self.songthreads.append(t)
+                 t.start()
+                 
+                 l.pack()
+        t=threading.Thread(target=startpeer,args=(self,))
+        t.start()
              
-             l.pack()
-             self.songlabels.append(l)
-         self.parent.update()
-         self.parent.deiconify()
+##         self.parent.update()
+##         self.parent.deiconify()
     def getdownlink(self):
          try:
              for i in range(0,len(self.links)):
@@ -136,10 +159,12 @@ class GUI(ttk.Frame):
      
 def main():
   
-    root = Tk()
+    
     root.geometry("350x300+300+300")
     app = GUI(root)
     root.mainloop()
+
+
     
 
 
