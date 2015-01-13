@@ -125,6 +125,8 @@ class GUI(ttk.Frame):
                  print(str(i+1)+">"+self.urlnames[i])
          except:
              pass
+         if(len(self.links)==0):
+             return
          i=int(input("Which one?"))-1
          name=input("Save as ?")
          name=name+".mp3"
