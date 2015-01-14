@@ -1,9 +1,9 @@
-import datetime
-import socket
-import socks
-
-socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
-socket.socket = socks.socksocket
+##import datetime
+##import socket
+##import socks
+##
+##socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
+##socket.socket = socks.socksocket
 import urllib.request
 import os
 import sys

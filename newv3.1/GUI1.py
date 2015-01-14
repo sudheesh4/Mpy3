@@ -1,5 +1,4 @@
 from tkinter import Tk, Text, BOTH, W, N, E, S
-#from ttk import Frame, Button, Label, Style
 from tkinter import ttk
 import tkinter.filedialog
 from tkinter import *
@@ -9,9 +8,19 @@ import sys
 import os
 import time
 import threading
-#dictlabel={}
-root = Tk()
 
+root = Tk()
+root.iconbitmap('favicon.ico')
+root.title('Mpy3')
+def help():
+    top=Toplevel(root)
+    top.iconbitmap('favicon.ico')
+    top.title('Mpy3- Help')
+    Label(top,text="1.Enter name of song you want to download and Go!").pack()
+    Label(top,text="2.Select which song to download from List").pack()
+    Label(top,text="3.Green link-Downloading song;Red -Paused download or Error has occured;Blue-Completed download").pack()
+    Label(top,text="4.To pause a download or resume a paused link just click on the link").pack()
+    Label(top,text="5.Once Download is complete click on the link to play it!s").pack()
 def update(name,label,dobj,complete):
     global log,dictlabel
     
@@ -25,22 +34,15 @@ def update(name,label,dobj,complete):
             size=str(size)+" Kb"
         label['text']=name+"-"+size+"-"+status+"-"+str(per)+"%"
         root.update()
-    label['text']=name+"-"+size+"-"+status+"-"+"100%"
-    root.update()
-       # dictlabel[label]=name+"-"+size+"-"+status+"-"+str(per)+"%"
+    if not dobj.er():
+        label['text']=name+"-"+size+"-"+status+"-"+"100%"
+        root.update()
+
 
 
 def peer(event,name):
     os.system(name)
-    
-def update2():
-    global dictlabel
-    while True:
-        try:
-            for l,txt in dictlabel.items():
-                l['text']=txt
-        except:
-            continue
+
 
 def peerpause(event,pause,label,c):
     if c==0:
@@ -97,6 +99,7 @@ def handlelink(label,uri,name):
     else:
         d.savefile(name)
         label.bind('<Button-1>',lambda event:peer(event,name.name))
+        tempn=os.path.basename(name.name)
         name.close()
         label.config(fg="blue",cursor="hand2")
     
@@ -107,8 +110,6 @@ class GUI(ttk.Frame):
         ttk.Frame.__init__(self, parent)   
          
         self.parent = parent
-##        self.links=[]
-##        self.urlnames=[]
         self.songthreads=[]
         self.songlabels=[]
         self.initUI()
@@ -133,7 +134,11 @@ class GUI(ttk.Frame):
         self.area.grid(row=1, column=0, columnspan=2, rowspan=4, 
             padx=5, sticky=E+W+S+N)
         
-        
+        self.help = ttk.Button(self, text="Help",command=help)
+        self.help.grid(row=1, column=3)
+
+        cbtn = ttk.Button(self, text="Close")
+        cbtn.grid(row=2, column=3, pady=4)        
         self.entry = Entry(self)
         self.entry.grid(row=5, column=0, padx=5,columnspan=3)
 
@@ -146,7 +151,7 @@ class GUI(ttk.Frame):
     def peertostart(self,event):
         self.startit()
     def startit(self):
-        # self.parent.withdraw()
+
         def startpeer(self):
              global dictlabel
              try:
@@ -154,8 +159,6 @@ class GUI(ttk.Frame):
              except:
                 return
              if not s.error:
-##                 self.links=s.givelinks()
-##                 self.urlnames=s.givenames()
                  downuri,downame=self.getdownlink(s)
                  if downuri=="":
                      print("NO LINK FOUND ! :/")
@@ -163,16 +166,14 @@ class GUI(ttk.Frame):
                  l=Label(self.area,text=str(os.path.basename(downame.name))+"-Connecting")
                  l.config(bg='white')  
                  t=threading.Thread(target=handlelink,args=(l,downuri,downame))
-              #   dictlabel[l]=downame
+              
                  self.songthreads.append(t)
                  t.start()
                  
                  l.pack()
         t=threading.Thread(target=startpeer,args=(self,))
         t.start()
-             
-##         self.parent.update()
-##         self.parent.deiconify()
+
     def getdownlink(self,sel):
          try:
              l=sel.givelinks()
@@ -184,8 +185,6 @@ class GUI(ttk.Frame):
          if(len(l)==0):
              return ("","")
          i=int(input("Which one?"))-1
-##         name=input("Save as ?")
-##         name=name+".mp3"
          f = tkinter.filedialog.asksaveasfile(mode='wb', defaultextension=".mp3")
          return (l[i],f)
 

@@ -1,9 +1,9 @@
-
-import socket
-import socks
-
-socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
-socket.socket = socks.socksocket
+##
+##import socket
+##import socks
+##
+##socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
+##socket.socket = socks.socksocket
 import urllib.request
 import sys
 import os
@@ -108,35 +108,38 @@ class downloadfile:
             tempfl=1
             while not self.error:
                 if self.pause[0]:
+                    self.status="Paused"
+                    print("PAUSED")
+                    continue
+                if not self.error:
+                    self.status='Downloading'
+
                     
-                    print("PAUSED")
-                    continue
-                self.status='Downloading'
+                    tempchnk=f.read(newchunk)
 
-                
-                tempchnk=f.read(newchunk)
-
-                self.newsize=self.newsize+len(tempchnk)
-                if not tempchnk:
-                    break
-                if tempfl==1:
-                    self.parts[start]=tempchnk
-                    tempfl=tempfl+1
-                else:
-                    self.parts[start]=self.parts[start]+tempchnk
-                "afsa"
-                if self.pause[0]:
-                    self.lastpause=True
-                    print("PAUSED")
-                    continue
-                self.status='Downloading'
-                if self.lastpause:
-                    time.sleep(1)
-                    self.lastpause=False
-               # time.sleep(0.75)
-               # printgui(str(round((self.newsize*100)/self.size,2))+"% completed! :D",per)
-               # pb_hd["value"] = int(round((self.newsize*100)/self.size,2))
-                self.pershow=int(round((self.newsize*100)/self.size,2))
+                    self.newsize=self.newsize+len(tempchnk)
+                    if not tempchnk:
+                        break
+                    if tempfl==1:
+                        self.parts[start]=tempchnk
+                        tempfl=tempfl+1
+                    else:
+                        self.parts[start]=self.parts[start]+tempchnk
+                    "afsa"
+                    if self.pause[0]:
+                        self.lastpause=True
+                        self.status="Paused"
+                        print("PAUSED")
+                        continue
+                    self.status='Downloading'
+                    if not self.error:
+                        if self.lastpause:
+                            time.sleep(1)
+                            self.lastpause=False
+                       # time.sleep(0.75)
+                       # printgui(str(round((self.newsize*100)/self.size,2))+"% completed! :D",per)
+                       # pb_hd["value"] = int(round((self.newsize*100)/self.size,2))
+                        self.pershow=int(round((self.newsize*100)/self.size,2))
 
         return
     def er(self):
