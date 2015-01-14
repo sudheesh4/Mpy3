@@ -1,19 +1,21 @@
-##
-##import socket
-##import socks
-##
-##socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
-##socket.socket = socks.socksocket
+
+import socket
+import socks
+
+socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
+socket.socket = socks.socksocket
 import urllib.request
 import sys
 import os
 import time
 import threading
 class downloadfile:
-    def __init__(self,uri):
+    def __init__(self,uri,pause):
         self.maxi=13
         i=0
         self.error=False
+        self.pause=pause
+        self.lastpause=False
         self.size=0
         self.filename=''
         self.parts={}
@@ -82,7 +84,10 @@ class downloadfile:
        # printgui("Requesting",lab)
         self.status='Requesting'
         while i<self.maxi:
-           
+            if self.pause[0]:
+                self.status="Paused"
+                continue
+            self.status='Requesting'
             try:
                 f=urllib.request.urlopen(req)
             except:
@@ -102,7 +107,12 @@ class downloadfile:
             self.status='Downloading'
             tempfl=1
             while not self.error:
-     
+                if self.pause[0]:
+                    
+                    print("PAUSED")
+                    continue
+                self.status='Downloading'
+
                 
                 tempchnk=f.read(newchunk)
 
@@ -114,6 +124,15 @@ class downloadfile:
                     tempfl=tempfl+1
                 else:
                     self.parts[start]=self.parts[start]+tempchnk
+                "afsa"
+                if self.pause[0]:
+                    self.lastpause=True
+                    print("PAUSED")
+                    continue
+                self.status='Downloading'
+                if self.lastpause:
+                    time.sleep(1)
+                    self.lastpause=False
                # time.sleep(0.75)
                # printgui(str(round((self.newsize*100)/self.size,2))+"% completed! :D",per)
                # pb_hd["value"] = int(round((self.newsize*100)/self.size,2))
