@@ -1,6 +1,7 @@
 from tkinter import Tk, Text, BOTH, W, N, E, S
 #from ttk import Frame, Button, Label, Style
 from tkinter import ttk
+import tkinter.filedialog
 from tkinter import *
 from DownloadUrl import *
 from emp3 import *
@@ -8,7 +9,7 @@ import sys
 import os
 import time
 import threading
-dictlabel={}
+#dictlabel={}
 root = Tk()
 
 def update(name,label,dobj):
@@ -44,14 +45,14 @@ def handlelink(label,uri,name):
     print(uri)
     d=downloadfile(uri)
    
-    st=threading.Thread(target=update,args=(name,label,d))
+    st=threading.Thread(target=update,args=(os.path.basename(name.name),label,d))
     st.start()
     thread=[]
     if d.er():
         print("try later!:/")
         
         return
-    d.namesize(name)
+    d.namesize(os.path.basename(name.name))
     if d.er():
         print("No file")
         return
@@ -68,8 +69,9 @@ def handlelink(label,uri,name):
         print('ERROR 101:/')
         return
     else:
-        d.savefile()
-        label.bind('<Button-1>',lambda event:peer(event,name))
+        d.savefile(name)
+        label.bind('<Button-1>',lambda event:peer(event,name.name))
+        name.close()
         label.config(fg="blue",cursor="hand2")
     
         
@@ -79,8 +81,8 @@ class GUI(ttk.Frame):
         ttk.Frame.__init__(self, parent)   
          
         self.parent = parent
-        self.links=[]
-        self.urlnames=[]
+##        self.links=[]
+##        self.urlnames=[]
         self.songthreads=[]
         self.songlabels=[]
         self.initUI()
@@ -126,13 +128,16 @@ class GUI(ttk.Frame):
              except:
                 return
              if not s.error:
-                 self.links=s.givelinks()
-                 self.urlnames=s.givenames()
-                 downuri,downame=self.getdownlink()
-                 l=Label(self.area,text=downame+"-Connecting")
+##                 self.links=s.givelinks()
+##                 self.urlnames=s.givenames()
+                 downuri,downame=self.getdownlink(s)
+                 if downuri=="":
+                     print("NO LINK FOUND ! :/")
+                     return
+                 l=Label(self.area,text=str(os.path.basename(downame.name))+"-Connecting")
                  l.config(bg='white')  
                  t=threading.Thread(target=handlelink,args=(l,downuri,downame))
-                 dictlabel[l]=downame
+              #   dictlabel[l]=downame
                  self.songthreads.append(t)
                  t.start()
                  
@@ -142,18 +147,21 @@ class GUI(ttk.Frame):
              
 ##         self.parent.update()
 ##         self.parent.deiconify()
-    def getdownlink(self):
+    def getdownlink(self,sel):
          try:
-             for i in range(0,len(self.links)):
-                 print(str(i+1)+">"+self.urlnames[i])
+             l=sel.givelinks()
+             urlnames=sel.givenames()
+             for i in range(0,len(l)):
+                 print(str(i+1)+">"+urlnames[i])
          except:
              pass
-         if(len(self.links)==0):
-             return
+         if(len(l)==0):
+             return ("","")
          i=int(input("Which one?"))-1
-         name=input("Save as ?")
-         name=name+".mp3"
-         return (self.links[i],name)
+##         name=input("Save as ?")
+##         name=name+".mp3"
+         f = tkinter.filedialog.asksaveasfile(mode='wb', defaultextension=".mp3")
+         return (l[i],f)
 
 
      
