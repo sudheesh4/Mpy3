@@ -12,10 +12,10 @@ import threading
 #dictlabel={}
 root = Tk()
 
-def update(name,label,dobj):
+def update(name,label,dobj,complete):
     global log,dictlabel
     
-    while True:
+    while not complete[0]:
         status,per=dobj.getstatus()
         size=dobj.getsize()
         if size>1024*1024:
@@ -25,6 +25,8 @@ def update(name,label,dobj):
             size=str(size)+" Kb"
         label['text']=name+"-"+size+"-"+status+"-"+str(per)+"%"
         root.update()
+    label['text']=name+"-"+size+"-"+status+"-"+"100%"
+    root.update()
        # dictlabel[label]=name+"-"+size+"-"+status+"-"+str(per)+"%"
 
 
@@ -40,20 +42,42 @@ def update2():
         except:
             continue
 
+def peerpause(event,pause,label,c):
+    if c==0:
+        pause[0]=True
+        label.bind('<Button-1>',lambda event:peerpause(event,pause,label,1)) 
+        label.config(fg="red",cursor="hand2")
+    if c==1:
+        pause[0]=False
+        label.bind('<Button-1>',lambda event:peerpause(event,pause,label,0)) 
+        label.config(fg="green",cursor="hand2")
+    
+
+
+    
+
 def handlelink(label,uri,name):
     uri=uri.replace(' ','%20')
+    pause=[]
+    pause.append(False)
     print(uri)
-    d=downloadfile(uri)
-   
-    st=threading.Thread(target=update,args=(os.path.basename(name.name),label,d))
+    label.bind('<Button-1>',lambda event:peerpause(event,pause,label,0)) 
+    label.config(fg="green",cursor="hand2")
+
+    d=downloadfile(uri,pause)
+    k=[]
+    k.append(False)
+    st=threading.Thread(target=update,args=(os.path.basename(name.name),label,d,k))
     st.start()
     thread=[]
     if d.er():
+        k[0]=True
         print("try later!:/")
         
         return
     d.namesize(os.path.basename(name.name))
     if d.er():
+        k[0]=True
         print("No file")
         return
     req=urllib.request.Request(uri)
@@ -65,7 +89,9 @@ def handlelink(label,uri,name):
 
     for i in thread:
         i.join()
+    k[0]=True
     if d.er():
+        
         print('ERROR 101:/')
         return
     else:
