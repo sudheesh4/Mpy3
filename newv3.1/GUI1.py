@@ -8,7 +8,7 @@ import sys
 import os
 import time
 import threading
-
+#import subprocess
 root = Tk()
 root.iconbitmap('favicon.ico')
 root.title('Mpy3')
@@ -40,8 +40,21 @@ def update(name,label,dobj,complete):
 
 
 
-def peer(event,name):
-    os.system(name)
+def peer(event,name,i):
+    if i==1:
+        os.system(name)
+        return
+    if i==2:
+        
+       # subprocess.Popen('explorer "{0}"'.format(name))
+        #dir=name
+        dir=os.path.dirname(name)
+        
+        dir=dir.replace('/','\ ')
+        dir=dir.replace(' ','')
+        
+        os.system('explorer '+dir)
+
 
 
 def peerpause(event,pause,label,c):
@@ -98,8 +111,9 @@ def handlelink(label,uri,name):
         return
     else:
         d.savefile(name)
-        label.bind('<Button-1>',lambda event:peer(event,name.name))
+        label.bind('<Button-1>',lambda event:peer(event,name.name,1))
         tempn=os.path.basename(name.name)
+        label.bind("<Button-3>",lambda event:peer(event,name.name,2))
         name.close()
         label.config(fg="blue",cursor="hand2")
     
