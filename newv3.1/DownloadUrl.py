@@ -1,9 +1,9 @@
-
-import socket
-import socks
-
-socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
-socket.socket = socks.socksocket
+##
+##import socket
+##import socks
+##
+##socks.set_default_proxy(socks.SOCKS5, "localhost",9150)
+##socket.socket = socks.socksocket
 import urllib.request
 import sys
 import os
@@ -34,7 +34,7 @@ class downloadfile:
             break
         if i==self.maxi:
            # printgui("Umm something unexpected happened!:/",lab)
-            self.status="Unable to connect"
+            self.status="Error-Unable to connect"
             self.error=True
             return
         self.status='connected'
@@ -49,7 +49,7 @@ class downloadfile:
         except:
 
            # printgui("No file found here!._.",lab)
-            self.status="No file"
+            self.status="Error-No file"
             self.error=True
             return
         self.chunk=int(self.size/self.notr)
@@ -91,38 +91,39 @@ class downloadfile:
             break
         if i==self.maxi:
             #printgui("No response!:/",lab)
-            self.status='No response'
+            self.status='Error-No response'
             self.error=True
             return
 
         newchunk=8192
         #newchunk=self.chunk/4
        # printgui("Reading",lab)
-        self.status='Downloading'
-        tempfl=1
-        while True:
- 
-            
-            tempchnk=f.read(newchunk)
+        if not self.error:
+            self.status='Downloading'
+            tempfl=1
+            while not self.error:
+     
+                
+                tempchnk=f.read(newchunk)
 
-            self.newsize=self.newsize+len(tempchnk)
-            if not tempchnk:
-                break
-            if tempfl==1:
-                self.parts[start]=tempchnk
-                tempfl=tempfl+1
-            else:
-                self.parts[start]=self.parts[start]+tempchnk
-           # time.sleep(0.75)
-           # printgui(str(round((self.newsize*100)/self.size,2))+"% completed! :D",per)
-           # pb_hd["value"] = int(round((self.newsize*100)/self.size,2))
-            self.pershow=int(round((self.newsize*100)/self.size,2))
+                self.newsize=self.newsize+len(tempchnk)
+                if not tempchnk:
+                    break
+                if tempfl==1:
+                    self.parts[start]=tempchnk
+                    tempfl=tempfl+1
+                else:
+                    self.parts[start]=self.parts[start]+tempchnk
+               # time.sleep(0.75)
+               # printgui(str(round((self.newsize*100)/self.size,2))+"% completed! :D",per)
+               # pb_hd["value"] = int(round((self.newsize*100)/self.size,2))
+                self.pershow=int(round((self.newsize*100)/self.size,2))
 
         return
     def er(self):
         return self.error
-    def savefile(self):
-        f=open(self.filename,"wb")
+    def savefile(self,f):
+        #f=open(self.filename,"wb")
         ch=''
         i=1
         res=self.parts[0]
@@ -135,7 +136,7 @@ class downloadfile:
             else:
                 break
         f.write(res)
-        f.close()
+       # f.close()
         #printgui('size- '+str(os.path.getsize(self.filename)),lab)
         self.status='Completed'
     def schnk(self):
