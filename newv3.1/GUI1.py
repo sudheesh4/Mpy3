@@ -23,6 +23,14 @@ def help():
     Label(top,text="5.Once Download is complete click on the link to play it!").grid(row=4,column=0,sticky=W)
 def proxy():
     pass
+def about():
+    top=Toplevel(root)
+    top.title('Mpy3- About')
+    Label(top,text="Mpy3! No more need to search through out Google to download a song!").grid(row=0,column=0,sticky=W)
+    Label(top,text="Download quick and Fast!").grid(row=1,column=0,sticky=W)
+    Label(top,text="I hope it helps you! :)").grid(row=2,column=0,sticky=W)
+    Label(top,text="Report errors/bugs at -..").grid(row=3,column=0,sticky=W)
+    Label(top,text="jointedace_s4").grid(row=4,column=1,sticky=E)
 def update(name,label,dobj,complete):
     global log,dictlabel
     
