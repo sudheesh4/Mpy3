@@ -1,4 +1,4 @@
-##import datetime
+import datetime
 ##import socket
 ##import socks
 ##
@@ -8,7 +8,7 @@ import urllib.request
 import os
 import sys
 from bs4 import BeautifulSoup
-
+from mssgboxes import justmssg
 def filtermp3(link): 
     mp3=[]
     for l in link:
@@ -22,18 +22,20 @@ class song_emp3:
         self.name=name
         self.url="http://emp3world.com/search/"+name+"_mp3_download.html"
         self.html=''
+        self.error=False
         #print(self.url)
         self.get_html()
         self.soup=BeautifulSoup(self.html)
         self.links=[]
+        
         self.urlnames=[]
         #print(self.url)
         self.get_links()
-        self.error=False
+        
 
     def get_html(self):
         i=0
-        maxi=100
+        maxi=10
         print("Connecting to site..")
         while i<maxi:
             try:
@@ -46,6 +48,7 @@ class song_emp3:
         if i==maxi:
             self.error=True
             print("Not able to connect!Try Again later:/")
+            return
             
         print('connected!')
             

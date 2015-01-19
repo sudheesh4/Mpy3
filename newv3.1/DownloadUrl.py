@@ -31,7 +31,7 @@ class downloadfile:
                 self.url=urllib.request.urlopen(uri)
             except:
                 i=i+1
-                print(i)
+                print("Trying again")
                 continue
             break
         if i==self.maxi:
@@ -55,6 +55,22 @@ class downloadfile:
             self.error=True
             return
         self.chunk=int(self.size/self.notr)
+##    def simpledown(self,re,file):
+##        i=0
+##        while i<self.maxi:
+##            try:
+##                f=urllib.request.urlopen(req)
+##            except:
+##                i=i+1
+##                continue
+##            break
+##        
+##        self.status="Reading"
+##        file.write(f.read())
+##        self.status="Completed"
+##        
+##        self.status="Error"
+##        print("ERRROR")
     def downl(self,start,re):
         req=None
         i=0
@@ -74,6 +90,7 @@ class downloadfile:
                 continue
 
             break
+        
 
         if i==self.maxi:
             #printgui("Bad Header!:/",lab)
@@ -109,7 +126,7 @@ class downloadfile:
             while not self.error:
                 if self.pause[0]:
                     self.status="Paused"
-                    print("PAUSED")
+                    #print("PAUSED")
                     continue
                 if not self.error:
                     self.status='Downloading'
@@ -129,7 +146,7 @@ class downloadfile:
                     if self.pause[0]:
                         self.lastpause=True
                         self.status="Paused"
-                        print("PAUSED")
+                       # print("PAUSED")
                         continue
                     self.status='Downloading'
                     if not self.error:
@@ -147,6 +164,7 @@ class downloadfile:
     def savefile(self,f):
         #f=open(self.filename,"wb")
         ch=''
+        self.status="completed"
         i=1
         res=self.parts[0]
         while ch!=None:

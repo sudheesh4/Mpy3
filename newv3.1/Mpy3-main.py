@@ -16,21 +16,36 @@ def help():
     top=Toplevel(root)
     #top.iconbitmap('favicon.ico')
     top.title('Mpy3- Help')
-    Label(top,text="1.Enter name of song you want to download and Go!").grid(row=0,column=0,sticky=W)
-    Label(top,text="2.Select which song to download from List").grid(row=1,column=0,sticky=W)
-    Label(top,text="3.Green -Downloading;Red -Paused or Error;Blue-Completed ").grid(row=2,column=0,sticky=W)
-    Label(top,text="4.To pause a download or resume a paused link just click on the link").grid(row=3,column=0,sticky=W)
-    Label(top,text="5.Once Download is complete click on the link to play it!").grid(row=4,column=0,sticky=W)
+    text="""Enter name of song you want to download and Go!
+    Select which song to download from List
+    Green -Downloading;Red -Paused or Error;Blue-Completed
+    To pause a download or resume a paused link just click on the link
+    Once Download is complete click on the link to play it!
+    """
+    Label(top,text=text,fg="red",font = "Verdana 8 bold").grid(row=1,column=0,sticky=W)
+
 def proxy():
     pass
 def about():
     top=Toplevel(root)
     top.title('Mpy3- About')
-    Label(top,text="Mpy3! No more need to search through out Google to download a song!").grid(row=0,column=0,sticky=W)
-    Label(top,text="Download quick and Fast!").grid(row=1,column=0,sticky=W)
-    Label(top,text="I hope it helps you! :)").grid(row=2,column=0,sticky=W)
-    Label(top,text="Report errors/bugs at -..").grid(row=3,column=0,sticky=W)
-    Label(top,text="jointedace_s4").grid(row=4,column=1,sticky=E)
+##    img=ImageTk.PhotoImage(Image.open('info.png'))
+##    w = img.width()
+##    h = img.height()
+##    top.geometry('%dx%d+0+0' % (w,h))
+## #   Label(top,image=img).grid(row=0,column=1)
+##    background_label = Label(top, image=img)
+##    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    text="""Mpy3!
+    No more need to search through
+    out Google to download a song!
+    Download quick and Fast!
+    I hope it helps you! :)
+    Report errors/bugs at -
+    sud4decrypt@gmail.com"""
+    Label(top,text=text,fg="green",font = "Verdana 8 bold").grid(row=1,column=0,sticky=W)
+
+    Label(top,text="jointedace_s4", fg="blue",font = "Verdana 6 bold").grid(row=5,column=0,sticky=E)
 def update(name,label,dobj,complete):
     global log,dictlabel
     
@@ -103,7 +118,31 @@ def peerpause(event,pause,label,c):
     
 
 
-    
+##def handlelink(label,uri,name):
+##    try:
+##        uri=uri.replace(' ','%20')
+##        pause=[]
+##        pause.append(False)
+##        label.bind('<Button-1>',lambda event:peerpause(event,pause,label,0))
+##        label.config(fg="green",cursor="hand2")
+##        d=downloadfile(uri,pause)
+##        k=[]
+##        k.append(False)
+##        st=threading.Thread(target=update,args=(os.path.basename(name.name),label,d,k))
+##        st.setDaemon(True)
+##        st.start()
+##        if d.er():
+##            k[0]=True
+##            return
+##        req=urllib.request.Request(uri)
+##        d.simpledown(req,name)
+##        k[0]=True
+##        label.config(fg="blue")
+##        name.close()
+##        return
+##    except:
+##        print("ERROR")
+##        pass
 
 def handlelink(label,uri,name):
     try:
@@ -127,7 +166,9 @@ def handlelink(label,uri,name):
             
             return
         d.namesize(os.path.basename(name.name))
+        
         if d.er():
+           # d.simpledown(req,name)
             k[0]=True
            # print("No file")
             return
@@ -190,7 +231,7 @@ class GUI(ttk.Frame):
         self.help = ttk.Button(self, text="Help",command=help)
         self.help.grid(row=1, column=3)
 
-        cbtn = ttk.Button(self, text="Socks5",command=proxy)
+        cbtn = ttk.Button(self, text="About",command=about)
         cbtn.grid(row=2, column=3, pady=4)        
         self.entry = Entry(self)
         self.entry.grid(row=5, column=0, padx=5,columnspan=3)
@@ -207,13 +248,29 @@ class GUI(ttk.Frame):
 
         def startpeer(self):
              global dictlabel
+             to=Toplevel(root)
+             nameofsong=self.entry.get()
+             to.title(nameofsong+'~Status')
+             statlab=Label(to,text="Connecting..")
+             statlab.pack()
              try:
-                 s=song_emp3(self.entry.get())
+                 s=song_emp3(nameofsong)
              except:
+                to.destroy()
                 return
+             ""
+             
              if not s.error:
+                 try:
+                    statlab['text']="Connected!Parsing links.."
+                 except:
+                    pass                 
                  downuri,downame=self.getdownlink(s)
                  if downuri=="":
+                     try:
+                         statlab['text']="Got no link here! :/"
+                     except:
+                         pass
                      print("NO LINK FOUND ! :/")
                      return
                  if downame==None:
@@ -227,12 +284,17 @@ class GUI(ttk.Frame):
                  t.start()
                  
                  l.pack()
+                 return
+             try:
+                 statlab['text']="Not able to connect!"
+             except:
+                 pass
         t=threading.Thread(target=startpeer,args=(self,))
         t.setDaemon(True)
         t.start()
         
 
-    def getdownlink(self,sel):
+    def getdownlink2(self,sel):
          try:
              l=sel.givelinks()
              urlnames=sel.givenames()
@@ -249,9 +311,30 @@ class GUI(ttk.Frame):
              return("","")
          f = tkinter.filedialog.asksaveasfile(mode='wb', defaultextension=".mp3")
          return (l[i],f)
-
-
-     
+    def getdownlink(self,sel):
+         try:
+            l=sel.givelinks()
+            urlnames=sel.givenames()
+            temp=[]
+            from mssgboxes import Linkmssg
+            root.withdraw()
+            lm=Linkmssg(root,urlnames,temp)
+            root.wait_window(lm.top)
+            root.update()
+            root.deiconify()
+            i=int(temp[0])
+            if i<0:
+                i=i*-1
+            "asgfa"
+            if i<len(l):
+                f=tkinter.filedialog.asksaveasfile(mode="wb",defaultextension=".mp3")
+                return(l[i],f)
+            return("","")
+         except:
+            return("","")
+    
+                
+    
 def main():
   
     
