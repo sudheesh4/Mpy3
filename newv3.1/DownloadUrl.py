@@ -71,6 +71,41 @@ class downloadfile:
 ##        
 ##        self.status="Error"
 ##        print("ERRROR")
+    def downlauto(self,f,file):
+        newchunk=8192
+        self.newsize=0
+        temppart=b''
+        if not self.error:
+            self.status='Downloading'
+            while not self.error:
+                if self.pause[0]:
+                    self.status="Paused"
+                    #print("PAUSED")
+                    continue
+                if not self.error:
+                    self.status='Downloading'
+
+                    
+                    tempchnk=f.read(newchunk)
+
+                    self.newsize=self.newsize+len(tempchnk)
+                    if not tempchnk:
+                        break
+                    temppart=temppart+tempchnk
+                    "afsa"
+                    if self.pause[0]:
+                        self.lastpause=True
+                        self.status="Paused"
+                        continue
+                    self.status='Downloading'
+                    if not self.error:
+                        if self.lastpause:
+                            time.sleep(1)
+                            self.lastpause=False
+                        self.pershow=int(round((self.newsize*100)/self.size,2))
+        file.write(temppart)
+        
+        
     def downl(self,start,re):
         req=None
         i=0
@@ -116,7 +151,8 @@ class downloadfile:
             self.status='Error-No response'
             self.error=True
             return
-
+        
+       
         newchunk=8192
         #newchunk=self.chunk/4
        # printgui("Reading",lab)
