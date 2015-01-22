@@ -18,9 +18,13 @@ def help():
     top.title('Mpy3- Help')
     text="""Enter name of song you want to download and Go!
     Select which song to download from List
-    Green -Downloading;Red -Paused or Error;Blue-Completed
-    To pause a download or resume a paused link just click on the link
-    Once Download is complete click on the link to play it!
+    Green -Downloading;Red -Error
+    Orange-Paused;Blue-Completed
+    To pause a download or resume a
+    paused link just click on the link
+    Once Download is complete Left click
+    on the link to play it , and Right Click
+    to open the file location!
     """
     Label(top,text=text,fg="red",font = "Verdana 8 bold").grid(row=1,column=0,sticky=W)
 
@@ -108,7 +112,7 @@ def peerpause(event,pause,label,c):
         if c==0:
             pause[0]=True
             label.bind('<Button-1>',lambda event:peerpause(event,pause,label,1)) 
-            label.config(fg="red",cursor="hand2")
+            label.config(fg="orange",cursor="hand2")
         if c==1:
             pause[0]=False
             label.bind('<Button-1>',lambda event:peerpause(event,pause,label,0)) 
@@ -143,7 +147,8 @@ def peerpause(event,pause,label,c):
 ##    except:
 ##        print("ERROR")
 ##        pass
-
+def justrandom(ev):
+    pass
 def handlelink(label,uri,name):
     try:
         uri=uri.replace(' ','%20')
@@ -163,7 +168,9 @@ def handlelink(label,uri,name):
         if d.er():
             k[0]=True
            # print("try later!:/")
-            
+            label.config(fg="red",cursor="hand2")
+            label.bind('<Button-1>',lambda event:justrandom(event))
+            name.close()            
             return
         d.namesize(os.path.basename(name.name))
         
@@ -171,8 +178,31 @@ def handlelink(label,uri,name):
            # d.simpledown(req,name)
             k[0]=True
            # print("No file")
+            label.config(fg="red",cursor="hand2")
+            label.bind('<Button-1>',lambda event:justrandom(event))
+            name.close()           
             return
         req=urllib.request.Request(uri)
+        tr=req
+        tr.headers['Range']='bytes=%s-%s'% (0,512)
+        tempf=urllib.request.urlopen(tr)
+        print(tempf.code)
+        
+        if int(str(tempf.code))==200:
+            d.downlauto(tempf,name)
+            if d.er():
+                print('error!:/')
+                label.config(fg="red",cursor="hand2")
+                label.bind('<Button-1>',lambda event:justrandom(event))
+                name.close()
+                return
+            else:
+                label.bind('<Button-1>',lambda event:peer(event,name.name,1))
+                tempn=os.path.basename(name.name)
+                label.bind("<Button-3>",lambda event:peer(event,name.name,2))
+                name.close()
+                label.config(fg="blue",cursor="hand2")
+            return
         for i in range(0,d.notr):
             t=threading.Thread(target=d.downl,args=(i*d.schnk(),req))
             t.setDaemon(True)
@@ -186,6 +216,9 @@ def handlelink(label,uri,name):
         if d.er():
             
             print('ERROR 101:/')
+            label.config(fg="red",cursor="hand2")
+            label.bind('<Button-1>',lambda event:justrandom(event))
+            name.close()
             return
         else:
             d.savefile(name)
@@ -195,6 +228,7 @@ def handlelink(label,uri,name):
             name.close()
             label.config(fg="blue",cursor="hand2")
     except:
+        print('c')
         pass
     
         
